@@ -1,11 +1,17 @@
 package com.cskaoyan.mall.service.impl;
 
+import com.alibaba.druid.util.StringUtils;
 import com.cskaoyan.mall.bean.Admin;
 import com.cskaoyan.mall.bean.ChangePwdAdmin;
 import com.cskaoyan.mall.dao.AdminDao;
 import com.cskaoyan.mall.dao.impl.AdminDaoImpl;
 import com.cskaoyan.mall.service.AdminService;
+import com.cskaoyan.mall.utils.DruidUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminServiceImpl implements AdminService {
@@ -43,7 +49,30 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public int updateAdmins(Admin admin) {
+    public int updateAdmins(Admin admin) {//?
         return adminDao.updateAdmins(admin);
+    }
+
+    @Override
+    public List<Admin> querySearchAdmins(Admin admin) {
+        String baseSql = "select * from admin where 1 = 1 ";
+        List<Object> params = new ArrayList<>();
+        if(!StringUtils.isEmpty(admin.getEmail())){
+            baseSql = baseSql + "and email like ?";
+            params.add("%" + admin.getEmail() + "%");
+        }
+        if(!StringUtils.isEmpty(admin.getNickname())){
+            baseSql = baseSql + "and nickname like ?";
+            params.add("%" + admin.getNickname() + "%");
+        }
+        QueryRunner runner = new QueryRunner(DruidUtils.getDataSource());
+        List<Admin> admins = null;
+        try {
+            admins = runner.query(baseSql, new BeanListHandler<>(Admin.class), params.toArray());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return admins;
     }
 }
