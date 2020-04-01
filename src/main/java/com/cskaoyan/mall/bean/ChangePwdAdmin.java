@@ -1,17 +1,17 @@
 package com.cskaoyan.mall.bean;
 
 public class ChangePwdAdmin {
-    private String email;
+    private String adminToken;
     private String oldPwd;
     private String newPwd;
-    private String confirmedPwd;
+    private String confirmPwd;
 
-    public String getEmail() {
-        return email;
+    public String getAdminToken() {
+        return adminToken;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAdminToken(String adminToken) {
+        this.adminToken = adminToken;
     }
 
     public String getOldPwd() {
@@ -30,21 +30,21 @@ public class ChangePwdAdmin {
         this.newPwd = newPwd;
     }
 
-    public String getConfirmedPwd() {
-        return confirmedPwd;
+    public String getConfirmPwd() {
+        return confirmPwd;
     }
 
-    public void setConfirmedPwd(String confirmedPwd) {
-        this.confirmedPwd = confirmedPwd;
+    public void setConfirmPwd(String confirmPwd) {
+        this.confirmPwd = confirmPwd;
     }
 
     @Override
     public String toString() {
         return "ChangePwdAdmin{" +
-                "email='" + email + '\'' +
+                "adminToken='" + adminToken + '\'' +
                 ", oldPwd='" + oldPwd + '\'' +
                 ", newPwd='" + newPwd + '\'' +
-                ", confirmedPwd='" + confirmedPwd + '\'' +
+                ", confirmPwd='" + confirmPwd + '\'' +
                 '}';
     }
 }
