@@ -72,15 +72,18 @@ public class AdminDaoImpl implements AdminDao {
 
     @Override
     public int changePwd(ChangePwdAdmin change) {
-        if(!change.getNewPwd().equals(change.getConfirmedPwd()))
+        System.out.println(change);
+        if(!change.getNewPwd().equals(change.getConfirmPwd())){
             return 300;//密码确认错误
-        String sql = "select pwd from admin where email = ?";
+        }
+        String sql = "select count(id) from admin where email = ? and pwd = ?";
         try {
-            String query = runner.query(sql, new ScalarHandler<String>(), change.getEmail());
-            if(query != change.getOldPwd())//密码应该是以密文存储在数据库，先这样写了。
+            Object hasAdmin = runner.query(sql, new ScalarHandler<Integer>(), change.getAdminToken(),
+                    change.getOldPwd());
+            if (hasAdmin == null)
                 return 301;
             runner.update("update admin set pwd = ? where email = ?",
-                            change.getConfirmedPwd(), change.getEmail());
+                            change.getConfirmPwd(), change.getAdminToken());
             return 200;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,7 +96,7 @@ public class AdminDaoImpl implements AdminDao {
         String sql = "select * from admin where id = ?";
         List<Admin> admin = null;
         try {
-            admin = runner.query(sql, new BeanListHandler<Admin>(Admin.class), id);
+            admin = runner.query(sql, new BeanListHandler<>(Admin.class), id);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -101,9 +104,9 @@ public class AdminDaoImpl implements AdminDao {
     }
 
     @Override
-    public int updateAdmins(Admin admin) {
+    public int updateAdmins(Admin admin) {//?
         String sql = "update admin set email = ? , nickname = ?, pwd = ? where id = ?";
-        try {
+           try {
             runner.update(sql, admin.getEmail(), admin.getNickname(), admin.getPwd(), admin.getId());
             return 200;
         } catch (SQLException e) {
