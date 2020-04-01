@@ -19,4 +19,6 @@ public interface AdminService {
     List<Admin> getAdminsInfo(int id);
 
     int updateAdmins(Admin admin);
+
+    List<Admin> querySearchAdmins(Admin admin);
 }
