@@ -29,19 +29,33 @@ public class AdminServlet extends HttpServlet {
         String requestURI = request.getRequestURI();
         String action = requestURI.replace("/api/admin/admin/", "");
         System.out.println(action);
-        if("login".equals(action)){
-            login(request, response);
+        switch (action){
+            case "login":
+                login(request, response);
+                break;
+            case "addAdminss":
+                addAdminss(request, response);
+                break;
+            case "changePwd":
+                changePwd(request, response);
+                break;
+            case "updateAdminss":
+                updateAdminss(request, response);
+                break;
+            case "getSearchAdmins":
+                getSearchAdmins(request, response);
+                break;
         }
-        if("addAdminss".equals(action)){
-            addAdminss(request, response);
-        }
-        if("changePwd".equals(action)){
-            changePwd(request, response);
-        }
-        if("updateAdminss".equals(action)){
-            updateAdminss(request, response);
-        }
+    }
 
+    private void getSearchAdmins(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String requestBody = HttpUtils.getRequestBody(request);
+        Admin admin = gson.fromJson(requestBody, Admin.class);
+        List<Admin> admins = adminService.querySearchAdmins(admin);
+        Result res = new Result();
+        res.setCode(0);
+        res.setData(admins);
+        response.getWriter().println(gson.toJson(res));
     }
 
     private void updateAdminss(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -62,6 +76,7 @@ public class AdminServlet extends HttpServlet {
         String requestBody = HttpUtils.getRequestBody(request);
         ChangePwdAdmin change = gson.fromJson(requestBody, ChangePwdAdmin.class);
         Result res = new Result();
+        System.out.println(change);
         int result = adminService.changePwd(change);
         if(result == 200)
             res.setCode(0);
@@ -69,7 +84,7 @@ public class AdminServlet extends HttpServlet {
             res.setCode(10000);
             if(result == 300)
                 res.setMessage("旧密码错误");
-            if(result == 301)
+            else if(result == 301)
                 res.setMessage("确认密码输入错误");
             else
                 res.setMessage("访问异常，请稍后再试");
@@ -118,14 +133,17 @@ public class AdminServlet extends HttpServlet {
         System.out.println("get");
         String requestURI = request.getRequestURI();
         String action = requestURI.replace("/api/admin/admin/", "");
-        if("allAdmins".equals(action)){
-            allAdmins(request, response);
-        }
-        if("deleteAdmins".equals(action)){
-            deleteAdmins(request, response);
-        }
-        if("getAdminsInfo".equals(action)){
-            getAdminsInfo(request, response);
+        switch (action){
+            case "allAdmins":
+                allAdmins(request, response);
+                break;
+            case "deleteAdmins":
+                deleteAdmins(request, response);
+                break;
+            case "getAdminsInfo":
+                getAdminsInfo(request, response);
+                break;
+
         }
     }
 
